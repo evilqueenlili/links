@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LILI</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%232e7d45'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' font-family='serif' fill='%23c8f0d0'%3E%24%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%232e7d45'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' font-family='serif' fill='%23c8f0d0'%3E%24%3C/text%3E%3C/svg%3E">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="LILI">
+  <meta name="theme-color" content="#1a3a1a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0f1f0f;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+      position: relative;
+      overflow-x: hidden;
+      font-family: 'DM Mono', monospace;
+    }
+
+    #moneyCanvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* dark overlay so text stays readable */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 10, 0.45);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 44px;
+      animation: fadeUp 0.9s ease both;
+    }
+
+    .names-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 13vw, 80px);
+      letter-spacing: 0.12em;
+      color: #c8f0d0;
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(80,200,100,0.5), 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .hamsa {
+      font-size: clamp(26px, 6vw, 38px);
+      line-height: 1;
+      filter: drop-shadow(0 0 8px rgba(100,220,120,0.6));
+    }
+
+    .arabic-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 13vw, 80px);
+      color: #f4d03f;
+      line-height: 1;
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 30px rgba(244,208,63,0.5), 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, #f4d03f, #50c878);
+      margin: 14px auto 0;
+      border-radius: 2px;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .link-item {
+      display: block;
+      text-decoration: none;
+      border: 1.5px solid rgba(80,200,100,0.3);
+      background: rgba(10, 25, 10, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 18px 24px;
+      position: relative;
+      border-radius: 6px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .link-item:nth-child(1) { animation-delay: 0.12s; }
+    .link-item:nth-child(2) { animation-delay: 0.22s; }
+
+    .link-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: #f4d03f;
+      border-radius: 6px 0 0 6px;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.2s;
+    }
+
+    .link-item:hover {
+      transform: translateX(5px);
+      border-color: rgba(244,208,63,0.5);
+      box-shadow: 0 6px 28px rgba(0,0,0,0.5), 0 0 20px rgba(80,200,100,0.15);
+    }
+
+    .link-item:hover::before { transform: scaleY(1); }
+
+    .link-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      color: #c8f0d0;
+      transition: color 0.2s;
+    }
+
+    .link-item:hover .link-title { color: #f4d03f; }
+
+    .link-arrow {
+      position: absolute;
+      right: 20px; top: 50%;
+      transform: translateY(-50%);
+      color: #f4d03f;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.2s, right 0.2s;
+    }
+
+    .link-item:hover .link-arrow { opacity: 1; right: 16px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 40px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="moneyCanvas"></canvas>
+<div class="overlay"></div>
+
+<div class="container">
+  <header class="header">
+    <div class="names-row">
+      <div class="name">LILI</div>
+      <div class="hamsa">🪬</div>
+      <div class="arabic-name">ليلي</div>
+    </div>
+    <div class="divider"></div>
+  </header>
+
+  <div class="links">
+    <a class="link-item" href="https://throne.com/evilqueenlili" target="_blank">
+      <div class="link-title">Throne Wishlist</div>
+      <span class="link-arrow">→</span>
+    </a>
+    <a class="link-item" href="https://revolut.me/q444" target="_blank">
+      <div class="link-title">Revolut Link</div>
+      <span class="link-arrow">→</span>
+    </a>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('moneyCanvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Currency types
+const currencies = [
+  { symbol: '$',   label: '100',  bg: '#2d6a3f', text: '#a8e6b8', accent: '#f4d03f' },
+  { symbol: '€',   label: '50',   bg: '#1a4f6e', text: '#a8d4f0', accent: '#f0c040' },
+  { symbol: 'kr',  label: '500',  bg: '#4a2060', text: '#d4a8f0', accent: '#f0d060' },
+];
+
+// Bill class
+class Bill {
+  constructor() { this.reset(true); }
+
+  reset(init = false) {
+    this.c    = currencies[Math.floor(Math.random() * currencies.length)];
+    this.x    = Math.random() * (canvas.width + 200) - 100;
+    this.y    = init ? Math.random() * canvas.height - canvas.height : -80;
+    this.w    = 90 + Math.random() * 50;
+    this.h    = this.w * 0.45;
+    this.rot  = (Math.random() - 0.5) * 0.7;
+    this.rotV = (Math.random() - 0.5) * 0.012;
+    this.vy   = 0.6 + Math.random() * 1.2;
+    this.vx   = (Math.random() - 0.5) * 0.4;
+    this.alpha= 0.55 + Math.random() * 0.4;
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rot);
+    ctx.globalAlpha = this.alpha;
+
+    // Shadow
+    ctx.shadowColor = 'rgba(0,0,0,0.4)';
+    ctx.shadowBlur  = 8;
+
+    // Body
+    ctx.fillStyle = this.c.bg;
+    ctx.beginPath();
+    ctx.roundRect(-this.w/2, -this.h/2, this.w, this.h, 4);
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+
+    // Inner border
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(-this.w/2+3, -this.h/2+3, this.w-6, this.h-6, 3);
+    ctx.stroke();
+
+    // Centre oval bg
+    ctx.fillStyle = 'rgba(255,255,255,0.07)';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.w*0.18, this.h*0.38, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // Symbol
+    ctx.fillStyle = this.c.text;
+    ctx.font      = `bold ${this.h * 0.52}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.c.symbol, 0, 0);
+
+    // Denomination - left
+    ctx.font      = `${this.h * 0.28}px monospace`;
+    ctx.fillStyle = this.c.accent;
+    ctx.textAlign = 'left';
+    ctx.fillText(this.c.label, -this.w/2 + 7, -this.h/2 + 10);
+
+    // Denomination - right bottom
+    ctx.textAlign = 'right';
+    ctx.fillText(this.c.label, this.w/2 - 7, this.h/2 - 6);
+
+    // Shine line
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-this.w/2 + 8, -this.h/2 + 6);
+    ctx.lineTo( this.w/2 - 8, -this.h/2 + 6);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  update() {
+    this.x   += this.vx;
+    this.y   += this.vy;
+    this.rot += this.rotV;
+    if (this.y > canvas.height + 80) this.reset();
+  }
+}
+
+// Spawn lots of bills
+const bills = Array.from({ length: 55 }, () => new Bill());
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  bills.forEach(b => { b.update(); b.draw(); });
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
