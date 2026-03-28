@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LILI — links</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --border: #1e1e1e;
+      --accent: #c8a97e;
+      --accent2: #8b0000;
+      --text: #e8e0d4;
+      --muted: #555;
+      --white: #f0ebe3;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.4;
+    }
+
+    /* Subtle red glow top */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(139,0,0,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .names-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 13vw, 80px);
+      letter-spacing: 0.12em;
+      color: var(--white);
+      line-height: 1;
+      position: relative;
+      display: inline-block;
+    }
+
+    .name::after {
+      content: 'LILI';
+      position: absolute;
+      inset: 0;
+      color: var(--accent2);
+      clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+      transform: translateX(2px);
+      opacity: 0.6;
+    }
+
+    .hamsa {
+      font-size: clamp(28px, 6vw, 40px);
+      line-height: 1;
+    }
+
+    .arabic-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(52px, 13vw, 80px);
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+      margin: 16px auto 0;
+      opacity: 0.5;
+    }
+
+    /* Links */
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .link-item {
+      display: block;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 22px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      animation: fadeUp 0.8s ease both;
+      cursor: pointer;
+    }
+
+    .link-item:nth-child(1) { animation-delay: 0.1s; }
+    .link-item:nth-child(2) { animation-delay: 0.18s; }
+    .link-item:nth-child(3) { animation-delay: 0.26s; }
+    .link-item:nth-child(4) { animation-delay: 0.34s; }
+    .link-item:nth-child(5) { animation-delay: 0.42s; }
+
+    .link-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.2s;
+      transform-origin: bottom;
+    }
+
+    .link-item:hover {
+      border-color: #333;
+      transform: translateX(4px);
+    }
+
+    .link-item:hover::before {
+      transform: scaleY(1);
+    }
+
+    .link-label {
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 300;
+    }
+
+    .link-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      color: var(--white);
+    }
+
+    .link-arrow {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s, right 0.2s;
+    }
+
+    .link-item:hover .link-arrow {
+      opacity: 1;
+      right: 16px;
+    }
+
+    /* Section label */
+    .section-label {
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 28px 0 12px;
+      padding-left: 2px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    /* Featured / Throne */
+    .link-item.featured {
+      border-color: rgba(200, 169, 126, 0.25);
+      background: linear-gradient(135deg, #111 0%, #140f0a 100%);
+    }
+
+    .link-item.featured .link-title {
+      color: var(--accent);
+    }
+
+    .link-item.featured::before {
+      background: var(--accent2);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 56px;
+      text-align: center;
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+
+    .footer-text {
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      body { padding: 40px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="header">
+      <div class="names-row">
+        <div class="name">LILI</div>
+        <div class="hamsa">🪬</div>
+        <div class="arabic-name">ليلي</div>
+      </div>
+      <div class="divider"></div>
+    </header>
+
+    <div class="links">
+
+      <a class="link-item featured" href="https://throne.com/evilqueenlili" target="_blank">
+        <div class="link-title">Throne Wishlist</div>
+        <span class="link-arrow">→</span>
+      </a>
+
+      <a class="link-item" href="https://revolut.me/q444" target="_blank">
+        <div class="link-title">Revolut</div>
+        <span class="link-arrow">→</span>
+      </a>
+
+    </div>
+
+
+
+  </div>
+</body>
+</html>
